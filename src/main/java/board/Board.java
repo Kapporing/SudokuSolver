@@ -31,7 +31,7 @@ public class Board {
         }
     }
 
-    List<List<Integer>> getBoard() {
+    public List<List<Integer>> getBoard() {
         return board;
     }
 

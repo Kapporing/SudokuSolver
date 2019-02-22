@@ -1,12 +1,21 @@
 import board.Board;
 
 import java.io.IOException;
+import java.util.Stack;
 
-public class SudokuSolver {
-    private Board board;
+public abstract class SudokuSolver {
 
-    private SudokuSolver(String filePath) throws IOException {
-        this.board = new Board(filePath);
+    public Board board;
+    public SudokuSolver(String filepath) throws IOException {
+        this.board = new Board(filepath);
+    }
+    public abstract Board solve();
+}
+
+class RecursiveSolver extends SudokuSolver {
+
+    public RecursiveSolver(String s) throws IOException {
+        super(s);
     }
 
     private Board solve(Board board) {
@@ -24,14 +33,36 @@ public class SudokuSolver {
         return null;
     }
 
-
-    private Board solve() {
+    public Board solve() {
         return solve(this.board);
     }
+}
 
-    public static void main(String [] args) throws IOException {
-        SudokuSolver solver = new SudokuSolver("src/test/resources/trivial_puzzle.sdk");
-        System.out.println(solver.board);
-        System.out.println(solver.solve());
+class DFSSolver extends SudokuSolver {
+
+    public DFSSolver(String s) throws IOException {
+        super(s);
+    }
+
+    public Board solve() {
+        Board board = this.board;
+        Stack<Board> stack = new Stack<>();
+        stack.push(board);
+        while(!stack.isEmpty()){
+            Board b = stack.pop();
+            if (b.isSolved()) {
+                return b;
+            }
+            for(Board x : b.getNeighbors()){
+                stack.push(x);
+            }
+        }
+        return null;
     }
 }
+
+
+
+
+
+
